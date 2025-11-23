@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+
+    <vTypeDistribution id="mix_L2">
+        <vType id="HDV_L2" probability="0.5" laneChangeModel="SL2015" latAlignment="center" minGapLat="0.6"
+               lcStrategic="20.0" lcCooperative="1.0" lcPushy="0.5" lcAssertive="3.0" lcSpeedGain="2.0"
+               accel="2.0" decel="4.5" sigma="0.5" length="4" minGap="2.5" maxSpeed="33.33" speedFactor="norm(1.0,0.05)" tau="1.4" color="1,1,0" carFollowModel="IDM"/>
+
+        <vType id="AV_L2"  probability="0.5" laneChangeModel="SL2015" latAlignment="center" minGapLat="0.4"
+               lcStrategic="50.0" lcCooperative="1.0" lcPushy="0.8" lcAssertive="4.0" lcSpeedGain="5.0"
+               accel="3.5" decel="4.5" sigma="0.0" length="4" minGap="1.0" maxSpeed="33.33" speedFactor="1.0" tau="0.5" color="0,1,1" carFollowModel="IDM"/>
+    </vTypeDistribution>
+
+    <vTypeDistribution id="mix_L1">
+        <vType id="HDV_L1" probability="0.5" laneChangeModel="SL2015" latAlignment="center" minGapLat="0.6"
+               lcStrategic="20.0" lcCooperative="1.0" lcPushy="0.5" lcAssertive="3.0" lcSpeedGain="2.0"
+               accel="2.0" decel="4.5" sigma="0.5" length="4" minGap="2.5" maxSpeed="30.56" speedFactor="norm(1.0,0.05)" tau="1.4" color="1,0.8,0" carFollowModel="IDM"/>
+
+        <vType id="AV_L1"  probability="0.5" laneChangeModel="SL2015" latAlignment="center" minGapLat="0.4"
+               lcStrategic="50.0" lcCooperative="1.0" lcPushy="0.8" lcAssertive="4.0" lcSpeedGain="5.0"
+               accel="3.5" decel="4.5" sigma="0.0" length="4" minGap="1.0" maxSpeed="30.56" speedFactor="1.0" tau="0.5" color="0,0.8,1" carFollowModel="IDM"/>
+    </vTypeDistribution>
+
+    <vTypeDistribution id="mix_L0">
+        <vType id="HDV_L0" probability="0.5" laneChangeModel="SL2015" latAlignment="center" minGapLat="0.6"
+               lcStrategic="20.0" lcCooperative="1.0" lcPushy="0.5" lcAssertive="3.0" lcSpeedGain="2.0"
+               accel="2.0" decel="4.5" sigma="0.5" length="4" minGap="2.5" maxSpeed="25.00" speedFactor="norm(1.0,0.05)" tau="1.4" color="1,0.6,0" carFollowModel="IDM"/>
+
+        <vType id="AV_L0"  probability="0.5" laneChangeModel="SL2015" latAlignment="center" minGapLat="0.4"
+               lcStrategic="50.0" lcCooperative="1.0" lcPushy="0.8" lcAssertive="4.0" lcSpeedGain="5.0"
+               accel="3.5" decel="4.5" sigma="0.0" length="4" minGap="1.0" maxSpeed="25.00" speedFactor="1.0" tau="0.5" color="0,0.6,1" carFollowModel="IDM"/>
+    </vTypeDistribution>
+
+    <vTypeDistribution id="mix_Ramp">
+        <vType id="HDV_Ramp" probability="0.5" laneChangeModel="SL2015" latAlignment="center" minGapLat="0.6"
+               lcStrategic="20.0" lcCooperative="1.0" lcPushy="0.5" lcAssertive="3.0" lcSpeedGain="2.0"
+               accel="2.0" decel="4.5" sigma="0.5" length="4" minGap="2.5" maxSpeed="22.22" speedFactor="norm(1.0,0.05)" tau="1.4" color="1,0.4,0" carFollowModel="IDM"/>
+
+        <vType id="AV_Ramp"  probability="0.5" laneChangeModel="SL2015" latAlignment="center" minGapLat="0.4"
+               lcStrategic="50.0" lcCooperative="1.0" lcPushy="0.8" lcAssertive="4.0" lcSpeedGain="5.0"
+               accel="3.5" decel="4.5" sigma="0.0" length="4" minGap="1.0" maxSpeed="22.22" speedFactor="1.0" tau="0.5" color="0,0.4,1" carFollowModel="IDM"/>
+    </vTypeDistribution>
+
+
+    <flow id="flow_E0_2_to_E2" type="mix_L2" begin="0" end="3600" vehsPerHour="2026" from="E0" to="E2" departLane="2" departSpeed="30.56"/>
+    <flow id="flow_E0_2_to_E4" type="mix_L2" begin="0" end="3600" vehsPerHour="134"  from="E0" to="E4" departLane="2" departSpeed="30.56"/>
+
+    <flow id="flow_E0_1_to_E2" type="mix_L1" begin="0" end="3600" vehsPerHour="1730" from="E0" to="E2" departLane="1" departSpeed="25.00"/>
+    <flow id="flow_E0_1_to_E4" type="mix_L1" begin="0" end="3600" vehsPerHour="200"  from="E0" to="E4" departLane="1" departSpeed="25.00"/>
+
+    <flow id="flow_E0_0_to_E2" type="mix_L0" begin="0" end="3600" vehsPerHour="1383" from="E0" to="E2" departLane="0" departSpeed="16.67"/>
+    <flow id="flow_E0_0_to_E4" type="mix_L0" begin="0" end="3600" vehsPerHour="267"  from="E0" to="E4" departLane="0" departSpeed="16.67"/>
+
+    <flow id="flow_E3_0_to_E2" type="mix_Ramp" begin="0" end="3600" vehsPerHour="873" from="E3" to="E2" departLane="0" departSpeed="16.67"/>
+    <flow id="flow_E3_0_to_E4" type="mix_Ramp" begin="0" end="3600" vehsPerHour="67"  from="E3" to="E4" departLane="0" departSpeed="16.67"/>
+
+</routes>

@@ -1,0 +1,75 @@
+import numpy as np
+
+def compute_reward(env_info):
+    """
+    计算单步奖励
+    Args:
+        env_info (dict): 包含 AV 和周围车辆信息的字典
+            - 'is_collision': bool, 是否发生碰撞
+            - 'is_success': bool, 是否到达终点
+            - 'velocity': float, AV 当前速度 (m/s)
+            - 'max_speed': float, 道路限速 (m/s)
+            - 'acceleration': float, AV 当前加速度 (m/s^2)
+            - 'min_distance_to_other': float, 与最近车辆的距离 (m)
+            - 'surrounding_vehicles_acc': list, 周围人类车辆的加速度列表
+    Returns:
+        float: reward
+    """
+    
+    # --- 1. 权重配置 (需要根据训练情况微调) ---
+    W_COLLISION = -100.0
+    W_SUCCESS = 20.0
+    W_SPEED = 0.5
+    W_TIME = -0.05       # 存在成本，防止死锁
+    W_JERK = -0.1        # 舒适性权重
+    W_SAFETY = -1.5      # 安全距离权重
+    W_SOCIAL = -2.0      # 社会影响权重 (不要吓到人类司机)
+
+    reward = 0.0
+    
+    # --- 2. 终止状态奖励 (Terminal Rewards) ---
+    
+    # A. 碰撞惩罚 (一票否决)
+    if env_info['is_collision']:
+        return W_COLLISION
+    
+    # B. 成功通行奖励
+    if env_info['is_success']:
+        return W_SUCCESS
+
+    # --- 3. 过程状态奖励 (Step Rewards) ---
+
+    # C. 效率奖励 (Efficiency)
+    # 逻辑：鼓励接近限速，但每一步都有微小的惩罚促使其尽快完成
+    v_ratio = env_info['velocity'] / env_info['max_speed']
+    reward += W_SPEED * np.clip(v_ratio, 0, 1) 
+    reward += W_TIME 
+
+    # D. 舒适性奖励 (Comfort)
+    # 逻辑：惩罚巨大的加速度绝对值 (急刹车或地板油)
+    # 假设加速度范围通常在 [-4, 3]
+    acc_penalty = abs(env_info['acceleration'])
+    # 如果是急刹车 (acc < -3)，惩罚加倍
+    if env_info['acceleration'] < -3.0:
+        acc_penalty *= 2.0
+    reward += W_JERK * acc_penalty
+
+    # E. 安全距离惩罚 (Safety Shield)
+    # 逻辑：如果与任何车辆距离小于 5米，给予指数级惩罚
+    safe_threshold = 5.0
+    dist = env_info['min_distance_to_other']
+    if dist < safe_threshold:
+        # 距离越近，惩罚越大 (例如: 距离1米时惩罚极高)
+        penalty = (safe_threshold - dist) ** 2
+        reward += W_SAFETY * penalty
+
+    # F. 社会影响/交互奖励 (Social Impact - 混行流核心)
+    # 逻辑：检查周围的人类车辆(HV)是否因为AV的动作而急刹车
+    # 如果周围有车加速度小于 -3.5 m/s^2，说明AV可能抢行了
+    for hv_acc in env_info['surrounding_vehicles_acc']:
+        if hv_acc < -3.5:
+            reward += W_SOCIAL
+            # 只要有一辆车急刹，就惩罚，避免重复累加导致数值爆炸
+            break 
+
+    return reward

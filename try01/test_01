@@ -1,0 +1,34 @@
+import time
+from stable_baselines3 import PPO
+from env_sumo import SumoAVEnv
+
+# 加载你训练好的模型路径 (根据实际情况修改文件名，例如 ppo_sumo_10000_steps)
+model_path = "models/PPO/ppo_sumo_final.zip" 
+
+# 注意：这里 use_gui=True，我们要看它怎么开
+env = SumoAVEnv(use_gui=True)
+
+print("正在加载模型...")
+# 如果还没训练好，可以先注释掉下面这行，看看随机乱开的效果
+# model = PPO.load(model_path) 
+
+obs, _ = env.reset()
+done = False
+
+print("开始演示...")
+while not done:
+    # 如果模型加载了，用模型预测动作
+    # action, _ = model.predict(obs, deterministic=True)
+    
+    # 如果还没模型，先用随机动作测试环境
+    action = env.action_space.sample() 
+    
+    obs, reward, done, truncated, info = env.step(action)
+    
+    # 打印当前步的信息
+    print(f"Step Reward: {reward:.2f} | Speed: {obs[0]:.2f} | Lane: {obs[1]:.0f}")
+    
+    # 稍微慢一点，方便肉眼观察
+    time.sleep(0.05)
+
+env.close()
